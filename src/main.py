@@ -4,6 +4,8 @@ import logging
 import traceback
 import urllib.parse
 import psycopg
+from mcp.server import FastMCP
+from .AzurePostgresMCP import AzurePostgreSQLMCP
 
 # Configure single logger for the entire application
 logging.basicConfig(
@@ -111,86 +113,23 @@ def main():
         # Test database connection first
         if not test_database_connection():
             logger.error("Database connection failed!")
-            logger.warning("Please fix the database connection and try again.")
-            logger.info("Container will stay alive for 2 minutes for debugging...")
-
-            import time
-            for i in range(120):  # 2 minutes
-                if i % 30 == 0:
-                    logger.info(f"Still alive... {i + 1}/120 seconds")
-                time.sleep(1)
-
             sys.exit(1)
 
         logger.info("Database connection successful!")
 
-        # Import MCP components
-        try:
-            from mcp.server import FastMCP
-            logger.info("FastMCP imported successfully")
-        except ImportError as e:
-            logger.error(f"Failed to import FastMCP: {e}")
-            sys.exit(1)
-
-        # Import our PostgreSQL class
-        try:
-            from .AzurePostgresMCP import AzurePostgreSQLMCP
-            logger.info("AzurePostgreSQLMCP imported successfully")
-        except ImportError as e:
-            logger.error(f"Failed to import AzurePostgreSQLMCP: {e}")
-            sys.exit(1)
-
-        # Create MCP server
-        logger.info("Creating FastMCP server...")
         mcp = FastMCP("Azure PostgreSQL MCP Server")
-
-        # Initialize PostgreSQL MCP
-        logger.info("Initializing PostgreSQL MCP...")
-        try:
-            azure_pg_mcp = AzurePostgreSQLMCP()
-            logger.info("PostgreSQL MCP initialized successfully")
-        except Exception as e:
-            logger.error(f"Failed to initialize PostgreSQL MCP: {e}")
-            logger.debug(f"Error details: {traceback.format_exc()}")
-            sys.exit(1)
+        azure_pg_mcp = AzurePostgreSQLMCP()
 
         # Add tools
         logger.info("Adding MCP tools...")
-        tools_added = 0
-
-        try:
-            mcp.add_tool(azure_pg_mcp.get_databases)
-            tools_added += 1
-            logger.debug("get_databases tool added")
-
-            mcp.add_tool(azure_pg_mcp.get_schemas)
-            tools_added += 1
-            logger.debug("get_schemas tool added")
-
-            mcp.add_tool(azure_pg_mcp.query_data)
-            tools_added += 1
-            logger.debug("query_data tool added")
-
-            mcp.add_tool(azure_pg_mcp.get_server_config)
-            tools_added += 1
-            logger.debug("get_server_config tool added")
-
-            mcp.add_tool(azure_pg_mcp.get_server_parameter)
-            tools_added += 1
-            logger.debug("get_server_parameter tool added")
-
-            logger.info(f"Added {tools_added} tools successfully")
-
-        except Exception as e:
-            logger.error(f"Failed to add tools: {e}")
-            sys.exit(1)
+        mcp.add_tool(azure_pg_mcp.get_databases)
+        mcp.add_tool(azure_pg_mcp.get_schemas)
+        mcp.add_tool(azure_pg_mcp.query_data)
+        mcp.add_tool(azure_pg_mcp.get_server_config)
+        mcp.add_tool(azure_pg_mcp.get_server_parameter)
 
         # Start the server
-        logger.info("Starting MCP server...")
         logger.info("MCP Server is now running!")
-        logger.info("Ready to accept MCP protocol connections")
-
-        # This is the correct way to run FastMCP
         mcp.run()
 
     except KeyboardInterrupt:
@@ -198,14 +137,8 @@ def main():
         sys.exit(0)
     except Exception as e:
         logger.error(f"Fatal error: {e}")
-        logger.debug(f"Full traceback: {traceback.format_exc()}")
-
-        # Keep container alive for debugging
-        logger.warning("Keeping container alive for debugging...")
-        import time
-        time.sleep(300)
+        logger.error(f"Full traceback: {traceback.format_exc()}")
         sys.exit(1)
-
 
 if __name__ == "__main__":
     main()
