@@ -2,7 +2,7 @@ import sys
 import logging
 import traceback
 from mcp.server import FastMCP
-from .AzurePostgresMCP import AzurePostgreSQLMCP
+from .azure_postgres_mcp import AzurePostgresMCP
 from .db_utils import test_database_connection
 
 # Configure single logger for the entire application
@@ -31,7 +31,7 @@ def main():
         logger.info("Database connection successful!")
 
         mcp = FastMCP("Azure PostgreSQL MCP Server")
-        azure_pg_mcp = AzurePostgreSQLMCP()
+        azure_pg_mcp = AzurePostgresMCP()
 
         # Add tools
         logger.info("Adding MCP tools...")
