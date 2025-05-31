@@ -1,19 +1,21 @@
-
 services:
   mcp-server:
     build: .
     ports:
       - "8000:8000"
     environment:
-      - PGHOST="hackathon.postgres.database.azure.com"
-      - PGUSER="hackathon_user"
-      - PGPASSWORD=""
+      - PGHOST=hackathon.postgres.database.azure.com
+      - PGUSER=hackathon_user
+      - PGPASSWORD=As123456  # Set this in your environment
       - AZURE_USE_AAD=${AZURE_USE_AAD:-False}
       - AZURE_SUBSCRIPTION_ID=${AZURE_SUBSCRIPTION_ID}
       - AZURE_RESOURCE_GROUP=${AZURE_RESOURCE_GROUP}
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/health')"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+    # Show all logs immediately
+    tty: true
+    # Add logging to see what's happening
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
