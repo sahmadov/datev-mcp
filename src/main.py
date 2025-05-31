@@ -129,7 +129,7 @@ def main():
 
         # Import our PostgreSQL class
         try:
-            from .AzurePostgreSQLMCP import AzurePostgreSQLMCP
+            from .AzurePostgresMCP import AzurePostgreSQLMCP
             print("✅ AzurePostgreSQLMCP imported successfully")
         except ImportError as e:
             print(f"❌ Failed to import AzurePostgreSQLMCP: {e}")

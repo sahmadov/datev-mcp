@@ -22,7 +22,7 @@ logger = logging.getLogger("azure_postgresql_mcp")
 
 class AzurePostgreSQLMCP:
     def __init__(self):
-        print("🔧 Initializing AzurePostgreSQLMCP...")
+        print("🔧 Initializing AzurePostgresMCP...")
 
         try:
             self.aad_in_use = os.environ.get("AZURE_USE_AAD", "False")
