@@ -202,3 +202,10 @@ $RECYCLE.BIN/
 # media/
 # uploads/
 # static/
+
+
+
+# Docker Compose files
+docker-compose.yml
+docker-compose.*.yml
+docker-compose.override.yml
