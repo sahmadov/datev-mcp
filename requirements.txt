@@ -1,29 +1,4 @@
-
-# MCP Server dependencies
-mcp>=1.0.0
-fastmcp>=0.4.0
-
-# Core web framework
-fastapi>=0.104.0
-uvicorn[standard]>=0.24.0
-
-# Async I/O library (required by other packages)
-anyio>=4.7.0
-
-# Database connectivity
-psycopg[binary]>=3.1.0
-
-# Azure dependencies
-azure-identity>=1.15.0
-azure-mgmt-postgresqlflexibleservers>=1.0.0
-
-# Data validation and serialization
-pydantic>=2.5.0
-
-# HTTP client (used by Azure SDK)
-requests>=2.31.0
-
-# Additional dependencies that may be required by Azure SDK
-cryptography>=41.0.0
-msal>=1.24.0
-msal-extensions>=1.0.0
+azure-identity==1.21.0
+azure-mgmt-postgresqlflexibleservers==1.1.0
+mcp[cli]==1.6.0
+psycopg[binary]==3.2.6
